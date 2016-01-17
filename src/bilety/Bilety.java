@@ -1,5 +1,6 @@
 
 package bilety;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -7,6 +8,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +23,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -68,27 +75,26 @@ static WebDriver driver = new FirefoxDriver();
         if((driver.findElement(By.className("b-price_message")).getText())!="Цена за одного пассажира"){
                 
         Thread.sleep(2000);
-        System.out.println("po usypiaczu");
+        //System.out.println("po usypiaczu");
         
         }
-        System.out.println("przed pobraniem");
-        driver.getPageSource();
+        //System.out.println("przed pobraniem");
+        Thread.sleep(2000);
         
+        String javascript = "return arguments[0].innerHTML";
+        String pageSource=(String)((JavascriptExecutor)driver).executeScript(javascript, driver.findElement(By.tagName("body")));
+       
         
-        //System.out.println(driver.getPageSource());
-        File plik = new File("D:/java/sciezka.xml");
-        FileWriter druk = new FileWriter(plik,false);
-        druk.write(driver.getPageSource());
-        druk.close();
-        Document doc = Jsoup.parse(plik,"UTF-8");
-        Elements elem = doc.select(".b-rzlt").not(".b-rzlt.m-train_card.s-hidden").not("div[class=rzlt_way_total i-clock_small i-clock_small]");
-        //Elements elem = doc.select(".b-rzlt.rzlt_way_tim");
-        System.out.println(elem.toString());
+        List<WebElement> lista =driver.findElements(By.className("rm-rzlt_block"));
+        for(WebElement x:lista){
+             //System.out.println(x.getText());
+             File plik = new File("D:/java/sciezka.txt");
+            FileWriter druk = new FileWriter(plik,true);
+            druk.write(x.getText());
+            druk.close();
+        }
         
-        File plik2 = new File("D:/java/sciezka1.xml");
-        FileWriter druk2 = new FileWriter(plik2,false);
-        druk2.write("<table><tbody>"+elem.toString()+"</tbody></table>");
-        druk2.close();
+            
     }
     private static void checkIfLoaded(){
         try {
@@ -98,7 +104,7 @@ static WebDriver driver = new FirefoxDriver();
               //System.out.println(t.getMessage());
               checkIfLoaded();
           } finally {
-            //System.out.println("Koniec czekania");
+            
             }
     }
     }
