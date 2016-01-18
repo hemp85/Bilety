@@ -1,51 +1,31 @@
 
 package bilety;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import java.io.BufferedWriter;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import javax.sql.rowset.spi.XmlReader;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import java.util.stream.Stream;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 public class Bilety {
 static WebDriver driver = new FirefoxDriver();
    
     public static void main(String[] args) throws InterruptedException, IOException {
-        
-        //WebDriver driver = new FirefoxDriver();
-      
         driver.get("http://avia.tutu.ru/");
 
-        
         WebElement element1 = driver.findElement(By.name("city_from"));
        
         element1.sendKeys("Kaliningrad");
@@ -73,12 +53,8 @@ static WebDriver driver = new FirefoxDriver();
           checkIfLoaded();
           
         if((driver.findElement(By.className("b-price_message")).getText())!="Цена за одного пассажира"){
-                
         Thread.sleep(2000);
-        //System.out.println("po usypiaczu");
-        
         }
-        //System.out.println("przed pobraniem");
         Thread.sleep(2000);
         
         String javascript = "return arguments[0].innerHTML";
@@ -86,16 +62,33 @@ static WebDriver driver = new FirefoxDriver();
        
         
         List<WebElement> lista =driver.findElements(By.className("rm-rzlt_block"));
-        for(WebElement x:lista){
-             //System.out.println(x.getText());
-             File plik = new File("D:/java/sciezka.txt");
-            FileWriter druk = new FileWriter(plik,true);
-            druk.write(x.getText());
-            druk.close();
+        lista.size();
+        
+        WebElement wb = lista.get(1).findElement(By.tagName("img"));
+        System.out.println(wb.getAttribute("alt"));
+        
+        
+        
+        
+        
+        for(int j =0;j<lista.size();j++){
+        String first = lista.get(j).getText();
+        InputStream is = new ByteArrayInputStream(first.getBytes());
+            BufferedReader bf = new BufferedReader(new InputStreamReader(is));
+            Stream<String> lines = bf.lines();
+            Object[] lin = lines.toArray();
+            lin[0].
+            int i = 0;
+            for(Object x:lin){
+                
+            System.out.println("Line"+i+": "+x.toString());
+            i++;
+            }
+            bf.close();
         }
         
-            
-    }
+    } 
+              
     private static void checkIfLoaded(){
         try {
             
