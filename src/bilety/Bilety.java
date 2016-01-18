@@ -59,18 +59,28 @@ static WebDriver driver = new FirefoxDriver();
         
         String javascript = "return arguments[0].innerHTML";
         String pageSource=(String)((JavascriptExecutor)driver).executeScript(javascript, driver.findElement(By.tagName("body")));
-       
+               
         
         List<WebElement> lista =driver.findElements(By.className("rm-rzlt_block"));
-        lista.size();
+        int a=lista.size();
+        for (int i=0;i<a;i++){
+        System.out.println("Opcja nr: "+(i+1));
+        String alt = lista.get(i).findElement(By.tagName("img")).getAttribute("alt");
+        System.out.println(alt);
+        String skad = lista.get(i).findElements(By.className("rzlt_way_to")).get(0).getText();
+        System.out.println(skad);
+        String hour1 = lista.get(i).findElements(By.className("rzlt_way_time")).get(0).getText();
+        System.out.println(hour1);
+        String dokad = lista.get(i).findElements(By.className("rzlt_way_to")).get(1).getText();
+        System.out.println(dokad);
+        String  hour2= lista.get(i).findElements(By.className("rzlt_way_time")).get(1).getText();
+        System.out.println(hour2);
+        String cena= lista.get(i).findElement(By.className("buttonext_digits")).getText();
+        System.out.println(cena);
+        System.out.println();
         
-        WebElement wb = lista.get(1).findElement(By.tagName("img"));
-        System.out.println(wb.getAttribute("alt"));
-        
-        
-        
-        
-        
+        }
+        /*buttonext_digits
         for(int j =0;j<lista.size();j++){
         String first = lista.get(j).getText();
         InputStream is = new ByteArrayInputStream(first.getBytes());
@@ -86,7 +96,7 @@ static WebDriver driver = new FirefoxDriver();
             }
             bf.close();
         }
-        
+       */ 
     } 
               
     private static void checkIfLoaded(){
