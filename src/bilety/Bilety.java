@@ -77,7 +77,7 @@ static WebDriver driver = new FirefoxDriver();
             BufferedReader bf = new BufferedReader(new InputStreamReader(is));
             Stream<String> lines = bf.lines();
             Object[] lin = lines.toArray();
-            lin[0].
+            
             int i = 0;
             for(Object x:lin){
                 
