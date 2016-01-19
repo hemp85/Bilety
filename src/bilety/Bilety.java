@@ -59,19 +59,43 @@ static WebDriver driver = new FirefoxDriver();
         
         String javascript = "return arguments[0].innerHTML";
         String pageSource=(String)((JavascriptExecutor)driver).executeScript(javascript, driver.findElement(By.tagName("body")));
-               
-        
+             
         List<WebElement> lista =driver.findElements(By.className("rm-rzlt_block"));
         int a=lista.size();
-        for (int i=0;i<a;i++){
+        //test przesiadek
+        /*List<WebElement> test1 =lista.get(15).findElements(By.tagName("span"));
+       System.out.println(test1.get(4).getText());
+       System.out.println(test1.get(5).getText());
+       System.out.println(test1.get(7).getText());
+       System.out.println(test1.get(8).getText());*/
+     
+      for (int i=0;i<a;i++){
+        String przes1="";
+        String przes2="";
+        List<WebElement> test1 =lista.get(i).findElements(By.tagName("span"));
+        int sp=0;
+        CharSequence cs="пересадка в";
+        for(WebElement x:test1){
+            if (x.getText().contains(cs)==false){
+                sp++;
+            } else if (sp<14){
+                przes1=test1.get(sp).getText();
+                sp++;
+               
+            } else if (sp>=14) {
+                przes2=test1.get(sp).getText();
+                
+            } 
+        }
+         
         System.out.println("Opcja nr: "+(i+1));
         String alt = lista.get(i).findElement(By.tagName("img")).getAttribute("alt");
         System.out.println(alt);
-        String skad = lista.get(i).findElements(By.className("rzlt_way_to")).get(0).getText();
+        String skad = (lista.get(i).findElements(By.className("rzlt_way_to")).get(0).getText())+" "+przes1;
         System.out.println(skad);
         String hour1 = lista.get(i).findElements(By.className("rzlt_way_time")).get(0).getText();
         System.out.println(hour1);
-        String dokad = lista.get(i).findElements(By.className("rzlt_way_to")).get(1).getText();
+        String dokad = (lista.get(i).findElements(By.className("rzlt_way_to")).get(1).getText())+" "+przes2;
         System.out.println(dokad);
         String  hour2= lista.get(i).findElements(By.className("rzlt_way_time")).get(1).getText();
         System.out.println(hour2);
@@ -79,9 +103,9 @@ static WebDriver driver = new FirefoxDriver();
         System.out.println(cena);
         System.out.println();
         
-        }
-        /*buttonext_digits
-        for(int j =0;j<lista.size();j++){
+       } //koniec petli for
+      
+       /* for(int j =0;j<lista.size();j++){
         String first = lista.get(j).getText();
         InputStream is = new ByteArrayInputStream(first.getBytes());
             BufferedReader bf = new BufferedReader(new InputStreamReader(is));
@@ -95,8 +119,8 @@ static WebDriver driver = new FirefoxDriver();
             i++;
             }
             bf.close();
-        }
-       */ 
+        }*/
+       
     } 
               
     private static void checkIfLoaded(){
