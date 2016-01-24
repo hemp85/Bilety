@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Iterator;
 import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WritableCell;
 import jxl.write.WritableSheet;
@@ -39,7 +40,7 @@ import org.openqa.selenium.NoSuchElementException;
 public class Bilety {
 static WebDriver driver;
   static List<String[]> tabelki = new ArrayList<>();
-    public static void main(String[] args) throws InterruptedException, IOException, WriteException {
+    public static void main(String[] args) throws InterruptedException, IOException, WriteException, BiffException {
         
         
         List<String[]> daty = new ArrayList<>();
@@ -69,7 +70,7 @@ static WebDriver driver;
             mulitple_days=Test.multipleDays();
         switch(mulitple_days){
             case "y": 
-            days= Test.daysAdvance();
+            days= Test.daysAdvance()+1;
             break;
             case "n":
             break;
@@ -178,7 +179,7 @@ static WebDriver driver;
         }
       
         else {
-        System.out.print(option+"\n"+alt+"\n"+skad+"\n"+hour1+"\n"+dokad+"\n"+hour2+"\n"+cena+"\n"+"\n");
+        //System.out.print(option+"\n"+alt+"\n"+skad+"\n"+hour1+"\n"+dokad+"\n"+hour2+"\n"+cena+"\n"+"\n");
         wiersze[0]=option;
         wiersze[1]=alt;
         wiersze[2]=skad;
@@ -191,8 +192,19 @@ static WebDriver driver;
         
         tabelki.add(i, wiersze);
        } //koniec petli for
-    WritableWorkbook workbook = Workbook.createWorkbook(new File("D:\\java\\przyklad.xls"));
-    WritableSheet sheet = workbook.createSheet("First Sheet", 0);
+      WritableWorkbook workbook=null;
+      WritableSheet sheet=null;
+      Workbook exisitngWorkbook =null;
+    if (z<1){
+    workbook = Workbook.createWorkbook(new File("D:\\java\\przyklad.xls"));
+    sheet = workbook.createSheet(daty.get(0)[z], z);
+   
+    }
+    if (z>=1){
+    exisitngWorkbook = Workbook.getWorkbook(new File("D:\\java\\przyklad.xls"));
+    workbook= Workbook.createWorkbook(new File("D:\\java\\przyklad.xls"), exisitngWorkbook);
+    sheet = workbook.createSheet(daty.get(0)[z], (z));
+    }
     int k=0;
     Label label;
     for(int j=0;j<a;j++){
