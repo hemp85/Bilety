@@ -23,6 +23,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Iterator;
 import jxl.Workbook;
 import jxl.write.Label;
@@ -37,13 +40,17 @@ public class Bilety {
 static WebDriver driver;
   static List<String[]> tabelki = new ArrayList<>();
     public static void main(String[] args) throws InterruptedException, IOException, WriteException {
-       
+        
+        
+        List<String[]> daty = new ArrayList<>();
         String cityFrom=Test.getCity();
         String cityTo =Test.getCity();
         String dateFrom = Test.checkDate();
         String decision;
         String dateTo=null;
-        
+        String mulitple_days;
+        int days=1;
+       
         do {
             decision=Test.decision();
         switch(decision){
@@ -57,7 +64,38 @@ static WebDriver driver;
             break;
         }
         } while(!(decision.toLowerCase().equals("y")||decision.toLowerCase().equals("n")));
+        
+      do {
+            mulitple_days=Test.multipleDays();
+        switch(mulitple_days){
+            case "y": 
+            days= Test.daysAdvance();
+            break;
+            case "n":
+            break;
+            default: System.out.println("Some error. Try again!");
+            mulitple_days ="blad";
+            break;
+        }
+        } while(!(mulitple_days.toLowerCase().equals("y")||mulitple_days.toLowerCase().equals("n")));
+      
+        String[] lot1 =new String[days];
+        String[] lot2=new String[days];
+        lot1[0]=dateFrom;
+        lot2[0]=dateTo;
+        daty.add(0, lot1);
+        daty.add(1, lot2);
+        
+        if(mulitple_days.toLowerCase().equals("y")){
+            switch(decision.toLowerCase()){
+                case "y": daty=Test.countDates(days, lot1[0],lot2[0]);
+                    break;
+                default : daty=Test.countDates(days, lot1[0]);
+            }
+        }
         System.out.println("Searching started. Please wait");
+        
+        for(int z=0;z<days;z++){
         driver = new FirefoxDriver();
         driver.get("http://avia.tutu.ru/");
         
@@ -65,10 +103,12 @@ static WebDriver driver;
         element1.sendKeys(cityFrom);
         WebElement element2 = driver.findElement(By.name("city_to"));
         element2.sendKeys(cityTo);
+        dateFrom =daty.get(0)[z];
         WebElement element3 = driver.findElement(By.name("date_from"));
         element3.click();
         element3.sendKeys(dateFrom);
         if(decision.toLowerCase().equals("y")){
+           dateTo =daty.get(1)[z];
            WebElement element4 = driver.findElement(By.name("date_back"));
            element4.click();
            element4.sendKeys(dateTo); 
@@ -81,19 +121,13 @@ static WebDriver driver;
         boolean clickChecker =driver.findElement(By.className("qtip-content")).isDisplayed();
         
         if (clickChecker==true){
-            System.out.println("Some errors on website. Wrong city name or date, probably. System quits");
+            System.out.println("Some errors on website. Wrong city name or date probably. System quits");
             System.exit(0);
         } 
-        } catch(NoSuchElementException e){
-            
-        } finally {
-            
-        }
+        } catch(NoSuchElementException e){}
         
         checkIfLoaded();
         
-        
-          
         if((driver.findElement(By.className("b-price_message")).getText())!="Цена за одного пассажира"){
         Thread.sleep(2000);
         }
@@ -135,7 +169,7 @@ static WebDriver driver;
         String cena= lista.get(i).findElement(By.className("buttonext_digits")).getText();
         
         if(decision.toLowerCase().equals("n")){
-        System.out.print(option+"\n"+alt+"\n"+skad+"\n"+hour1+"\n"+cena+"\n"+"\n");
+        //System.out.print(option+"\n"+alt+"\n"+skad+"\n"+hour1+"\n"+cena+"\n"+"\n");
         wiersze[0]=option;
         wiersze[1]=alt;
         wiersze[2]=skad;
@@ -172,7 +206,9 @@ static WebDriver driver;
         } 
         workbook.write();
         workbook.close();
-        //driver.close();
+        driver.close();
+        System.out.println("Info about day "+(z+1)+ " saved!");
+        }
        
     } 
               
